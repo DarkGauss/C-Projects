@@ -1,0 +1,46 @@
+Report:
+    Issues encountered while building:
+        1) 
+           Issue:
+            How to communicate to the buffer when the consumer is ready to consume.
+           Resolution:
+            I implemented 4 more pipes that connected from the consumer to the buffer in 
+            order to allow the Consumer to notify the buffer when to send a charector to
+            it's pipe.
+        2) 
+           Issue:
+            Pipes would block on read causing the buffer to not to service any
+            other consumers/producers until the other end was closed.
+           Resolution:
+            Make every pipe non-blocking.
+        3)
+           Issue:
+            When the buffer was empty, a consumer would not be given a char, and passed over,
+            causing it to never recieve it's messege when the buffer filled up again.
+           Resolution:
+            I implemented a array of values to signal if a consumer was ready to consume, but
+            had been passed over. When the buffer checks if it recieved it a ready charector, 
+            it also checks if the consumer is waiting, if it is, it sends a char immediatly.
+
+    Observations on the running program:
+        1)
+            When the max time for production is greater then that of the consumer, the average 
+            buffer size will tend toward zero as the diffrence grows. Since the consumers will be
+            constantly waiting on food(chars) from the buffer, so when a producer produces, it is 
+            almost immediatly consumed.
+        2)
+           When the max time for the consumer is greater then the producer, the average buffer size
+           will become larger as the diffrence grows. This is because the producers are workaholics 
+           and producing into the buffer faster then the consumers can consume them.
+        3)
+           When the max time for the consumer and the buffer are the same. The average size will remained 
+           contrained, near 0-100. This size is due to the randomness of the consumer vs the buffer, but as
+           the running time increases, the average will not grow larger, since the consumers are consuming
+            at the same average rate as the producers.
+        4) 
+           I built in additional functionality to my program to vary the amount of producers and consumers. 
+            When the number of producers was greater then the number of producers, I noticed simler effects
+            to 1). When the number of producers was less then the number of consumers, I noticed effects
+            simular to 2). Interesting further experimentation would be to find the optimial production/consumetion
+            max times in order to counteract a diffrening number of producers/consumers and make the average buffer
+            behave like 3).
